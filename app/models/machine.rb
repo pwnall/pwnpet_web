@@ -21,17 +21,19 @@ class Machine < ActiveRecord::Base
   before_validation :generate_identity
   
   # Machines on the same network, obtained using mDNS queries.
-  def self.from_mdns(timeout = 1, service = '_workstation._tcp')
+  def self.from_mdns(timeout = 2, service = '_workstation._tcp')
+    # TODO(pwnall): synchronization, better thread handling
     machines = []
     dnssd_asnyc = DNSSD.browse service do |reply|
-      machine = { :name => reply.name, :address => nil }
-      DNSSD.resolve reply do |r|
-        machine[:address] = r.target
+      dnssd_async2 = DNSSD.resolve reply do |r|
+        machine = { :name => reply.name, :address => r.target }
+        machines << machine
         break
       end
-      machines << machine
+      sleep timeout - 0.5
+      dnssd_async2.stop
     end
-    sleep 1
+    sleep timeout
     dnssd_async.stop rescue nil
     machines.each { |machine| machine[:address].gsub!(/\.$/, '') }
     machines

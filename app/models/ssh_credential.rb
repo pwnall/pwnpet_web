@@ -13,29 +13,27 @@ class SshCredential < ActiveRecord::Base
   
   # :nodoc: credentials should either have a password or a key
   def require_password_or_key
-  	if password.nil? && key.nil?
+  	if scrambled_password.nil? && key.nil?
   	  errors[:password] << 'must be set if no SSH key is present'
   	  errors[:key] << 'must be set if no password is present'
-  	elsif !password.nil? && !key.nil?
+  	elsif !scrambled_password.nil? && !key.nil?
       errors[:password] << 'cannot be set if a SSH key is also set'
       errors[:key] << 'cannot be set if a password is also set'
   	end
   end
   validate :require_password_or_key
   
-  # :nodoc: scrambles password so it's not trivial to read it in the database
-  def scramble_password
-    self.password = self.class.scramble_password(password) if password
+  # Changes the real (unscrambled) password.
+  def password=(new_password)
+    self.scrambled_password = new_password &&
+                              self.class.scramble_password(new_password)
   end
-  before_save :scramble_password
   
-  # :nodoc: de-scrambles password so it can be used
-  def unscramble_password    
-    self.password = password.unpack('m').first if password
+  # The real (unscrambled) password.
+  def password
+    scrambled_password && scrambled_password.unpack('m').first
   end
-  after_save :unscramble_password
-  after_initialize :unscramble_password
-  
+    
   # True if superuser commands should be issued using sudo.
   def needs_sudo?
     username != 'root'
@@ -48,6 +46,6 @@ class SshCredential < ActiveRecord::Base
   
   # Generates a keypair.
   def self.new_key
-    OpenSSL::PKey::RSA.new(2048).to_der
+    OpenSSL::PKey::RSA.new(2048).to_pem
   end
 end

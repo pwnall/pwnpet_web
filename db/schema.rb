@@ -30,9 +30,9 @@ ActiveRecord::Schema.define(:version => 20110217011648) do
   add_index "net_addresses", ["machine_id"], :name => "index_net_addresses_on_machine_id"
 
   create_table "ssh_credentials", :force => true do |t|
-    t.integer "machine_id", :null => false
-    t.string  "username",   :null => false
-    t.string  "password"
+    t.integer "machine_id",         :null => false
+    t.string  "username",           :null => false
+    t.string  "scrambled_password"
     t.text    "key"
   end
 
