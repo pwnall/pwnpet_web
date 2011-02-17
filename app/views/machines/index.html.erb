@@ -1,0 +1,27 @@
+<h1>Listing machines</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Uid</th>
+    <th>Secret</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @machines.each do |machine| %>
+  <tr>
+    <td><%= machine.name %></td>
+    <td><%= machine.uid %></td>
+    <td><%= machine.secret %></td>
+    <td><%= link_to 'Show', machine %></td>
+    <td><%= link_to 'Edit', edit_machine_path(machine) %></td>
+    <td><%= link_to 'Destroy', machine, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Machine', new_machine_path %>

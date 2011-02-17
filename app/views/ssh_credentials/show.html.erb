@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Machine:</b>
+  <%= @ssh_credential.machine_id %>
+</p>
+
+<p>
+  <b>Username:</b>
+  <%= @ssh_credential.username %>
+</p>
+
+<p>
+  <b>Password:</b>
+  <%= @ssh_credential.password %>
+</p>
+
+<p>
+  <b>Key:</b>
+  <%= @ssh_credential.key %>
+</p>
+
+
+<%= link_to 'Edit', edit_ssh_credential_path(@ssh_credential) %> |
+<%= link_to 'Back', ssh_credentials_path %>
