@@ -35,6 +35,11 @@ class SshCredential < ActiveRecord::Base
     scrambled_password && scrambled_password.unpack('m').first
   end
   
+  # Generates a new key and assigns it to the key field.
+  def new_key
+    self.key = self.class.new_key
+  end
+  
   # A hash with the SSH options conveying this credential.
   def ssh_options
     if key
@@ -59,8 +64,14 @@ class SshCredential < ActiveRecord::Base
     OpenSSL::PKey::RSA.new(2048).to_pem
   end
   
-  # Installs 
-  def install_ssh_key(ssh, key, target_username = self.username)
+  # Installs this credential into a machine via SSH.
+  #
+  # After this call, the credential can be used to log into the machine. The
+  # credential's user should already be created.
+  #
+  # Args:
+  #   ssh:: the Net::SSH session 
+  def install(ssh)
     
   end
 end
