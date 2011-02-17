@@ -15,15 +15,19 @@ class Machine < ActiveRecord::Base
   # Wraps Net::SSH.start.
   #
   # Args:
-  #   username:: the user whose credential will be used to log in
+  #   username_or_credential:: credential to be used for logging in, or the
+  #                            username whose credential will be used to log in
   #
   # Returns a Net::SSH::Session 
   #
   # If a block is given, the SSH session is given to it, and then closed when
   # the block completes.
-  def ssh_session(username = nil)
-    credential = username ? ssh_credential_for(username) :
-                            ssh_credentials.first
+  def ssh_session(username_or_credential = nil)
+    if username_or_credential && username_or_credential.respond_to?(:to_str)
+      credential = ssh_credential_for username_or_credential
+    else
+      credential = username_or_credential || ssh_credentials.first
+    end
     user = credential.username
     opts = credential.ssh_options
     # TODO(pwnall): loop through all addresses until one works

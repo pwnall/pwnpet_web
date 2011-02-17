@@ -62,7 +62,7 @@ describe Machine do
     end
     
     describe 'when not given a block' do
-      before(:each) { @ssh_session = machines(:bunny1).ssh_session }
+      before(:each) { @ssh_session = machines(:bunny1).ssh_session('pwnpet') }
       after(:each) { @ssh_session.close }
 
       it 'should return a session' do
