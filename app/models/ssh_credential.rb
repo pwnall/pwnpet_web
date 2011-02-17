@@ -40,6 +40,17 @@ class SshCredential < ActiveRecord::Base
     self.key = self.class.new_key
   end
   
+  # Checks that the credentials work by using them for a SSH session.
+  def health_check
+    begin
+      machine.ssh_session(self) do |ssh|
+        return ssh.exec!("echo 42") == 42
+      end
+    rescue
+      return false
+    end
+  end
+  
   # A hash with the SSH options conveying this credential.
   def ssh_options
     if key
