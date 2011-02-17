@@ -12,6 +12,26 @@ class Machine < ActiveRecord::Base
   # Credentials used to command the machine via SSH.
   has_many :ssh_credentials, :inverse_of => :machine
 
+  # Wraps Net::SSH.start.
+  #
+  # Args:
+  #   username:: the user whose credential will be used to log in
+  # 
+  # If a block is given, it is passed to Net::SSH.start.
+  def ssh_session(username = nil, &block)
+    credential = username ? ssh_credential_for(username) :
+                            ssh_credentials.first
+    # TODO(pwnall): loop through all addresses until one works
+    address = addresses.first
+    Net::SSH.start address.address, credential.username,
+                   credential.ssh_options, &block
+  end
+  
+  # The SSH login information for a username. nil if not found
+  def ssh_credential_for(username)
+    ssh_credentials.where(:username => username).first
+  end
+
   # Populates the auto-generated fields for a machine.
   def generate_identity
     self.uid ||= OpenSSL::Random.random_bytes(16).unpack('H*').first

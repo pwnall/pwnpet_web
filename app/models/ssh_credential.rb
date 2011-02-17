@@ -1,3 +1,4 @@
+# Information used to log into a machine via SSH.
 class SshCredential < ActiveRecord::Base
   # The machine that this login credential is used for.
   belongs_to :machine
@@ -32,6 +33,15 @@ class SshCredential < ActiveRecord::Base
   # The real (unscrambled) password.
   def password
     scrambled_password && scrambled_password.unpack('m').first
+  end
+  
+  # A hash with the SSH options conveying this credential.
+  def ssh_options
+    if key
+      { :key_data => [key] }
+    else
+      { :password => password }
+    end
   end
     
   # True if superuser commands should be issued using sudo.

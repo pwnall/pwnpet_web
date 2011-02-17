@@ -25,7 +25,7 @@ gem 'mysql2'
 # gem 'aws-s3', :require => 'aws/s3'
 gem 'dnssd', '>= 1.4'
 gem 'net-mdns', '>= 0.4'
-gem 'net-ssh', '>= 2.1.0'
+gem 'net-ssh', '>= 2.1.0', :require => 'net/ssh'
 gem 'jquery-rails', '>= 0.2.7'
 
 # Bundle gems for the local environment. Make sure to

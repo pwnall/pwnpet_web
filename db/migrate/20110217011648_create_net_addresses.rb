@@ -2,7 +2,7 @@ class CreateNetAddresses < ActiveRecord::Migration
   def self.up
     create_table :net_addresses do |t|
       t.integer :machine_id, :null => false
-      t.string :address, :length => 128, :null => false
+      t.string :address, :length => 64, :null => false
 
       t.timestamps
     end
