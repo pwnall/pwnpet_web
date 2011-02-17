@@ -1,3 +1,3 @@
-bunny1_vbox:
+bunny1_mdns:
   machine: bunny1
   address: pwnpet-test.local

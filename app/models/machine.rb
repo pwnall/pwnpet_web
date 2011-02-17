@@ -16,15 +16,31 @@ class Machine < ActiveRecord::Base
   #
   # Args:
   #   username:: the user whose credential will be used to log in
-  # 
-  # If a block is given, it is passed to Net::SSH.start.
-  def ssh_session(username = nil, &block)
+  #
+  # Returns a Net::SSH::Session 
+  #
+  # If a block is given, the SSH session is given to it, and then closed when
+  # the block completes.
+  def ssh_session(username = nil)
     credential = username ? ssh_credential_for(username) :
                             ssh_credentials.first
+    user = credential.username
+    opts = credential.ssh_options
     # TODO(pwnall): loop through all addresses until one works
     address = addresses.first
-    Net::SSH.start address.address, credential.username,
-                   credential.ssh_options, &block
+    addr = address.address
+    if Kernel.block_given?
+      Net::SSH.start addr, user, opts do |session|
+        session[:credential] = credential
+        session[:address] = address
+        yield session
+      end
+    else
+      session = Net::SSH.start addr, user, opts
+      session[:credential] = credential
+      session[:address] = address
+      session
+    end
   end
   
   # The SSH login information for a username. nil if not found

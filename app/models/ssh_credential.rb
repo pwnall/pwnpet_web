@@ -43,7 +43,7 @@ class SshCredential < ActiveRecord::Base
       { :password => password }
     end
   end
-    
+  
   # True if superuser commands should be issued using sudo.
   def needs_sudo?
     username != 'root'
@@ -57,5 +57,10 @@ class SshCredential < ActiveRecord::Base
   # Generates a keypair.
   def self.new_key
     OpenSSL::PKey::RSA.new(2048).to_pem
+  end
+  
+  # Installs 
+  def install_ssh_key(ssh, key, target_username = self.username)
+    
   end
 end

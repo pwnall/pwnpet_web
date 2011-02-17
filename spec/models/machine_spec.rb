@@ -42,23 +42,51 @@ describe Machine do
   end
   
   describe 'ssh_session' do
-    it 'should yield when given a block' do
-      machines(:bunny1).ssh_session do |ssh|
-        ssh.exec!("echo 42").should == "42\n"
+    describe 'when given a block' do
+      before :each do
+        machines(:bunny1).ssh_session do |ssh|
+          @yield_session = ssh
+          @yield_result = ssh.exec!("echo 42")
+        end
+      end
+      
+      it 'should yield a session' do
+        @yield_result.should == "42\n"
+      end
+      it 'should yield a session with the credential used' do
+        @yield_session[:credential].should == ssh_credentials(:bunny1_pwnpet)
+      end
+      it 'should yield a session with the address used' do
+        @yield_session[:address].should == net_addresses(:bunny1_mdns)
+      end
+    end
+    
+    describe 'when not given a block' do
+      before(:each) { @ssh_session = machines(:bunny1).ssh_session }
+      after(:each) { @ssh_session.close }
+
+      it 'should return a session' do
+        @ssh_session.exec!("echo 42").should == "42\n"
+      end
+      it 'should return a session with the credential used' do
+        @ssh_session[:credential].should == ssh_credentials(:bunny1_pwnpet)
+      end
+      it 'should return a session with the address used' do
+        @ssh_session[:address].should == net_addresses(:bunny1_mdns)
       end
     end
   end
   
   describe 'from_mdns' do
     before(:all) do
-      @machines = Machine.from_mdns
+      @mdns_machines = Machine.from_mdns
     end
     it 'should have at least 1 machine (self)' do
-      @machines.should have_at_least(1).machine
+      @mdns_machines.should have_at_least(1).machine
     end
     
     describe 'first machine' do
-      let(:machine) { @machines.first }
+      let(:machine) { @mdns_machines.first }
       it 'should have a name' do
         machine[:name].should_not be_nil
       end
