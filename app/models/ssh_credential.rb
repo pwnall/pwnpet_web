@@ -44,7 +44,7 @@ class SshCredential < ActiveRecord::Base
   def health_check
     begin
       machine.ssh_session(self) do |ssh|
-        return ssh.exec!("echo 42") == 42
+        return ssh.exec!("echo 42") == "42\n"
       end
     rescue
       return false
@@ -58,6 +58,18 @@ class SshCredential < ActiveRecord::Base
     else
       { :password => password }
     end
+  end
+  
+  # Entry in the ~/.ssh/authorized_keys file.
+  #
+  # This only works for key credentials.
+  def ssh_authorized_keys_line
+    ssl_key = OpenSSL::PKey::RSA.new key
+    [
+      ssl_key.ssh_type,
+      [ssl_key.public_key.to_blob].pack('m').gsub("\n", ''),
+      "#{username}@pwnpet"
+    ].join(' ')
   end
   
   # True if superuser commands should be issued using sudo.
@@ -83,6 +95,21 @@ class SshCredential < ActiveRecord::Base
   # Args:
   #   ssh:: the Net::SSH session 
   def install(ssh)
-    
+    if key
+      # SSH key installation.
+      home_dir = (username == 'root') ? '/root' : "/home/#{username}"
+      ssh_dir = "#{home_dir}/.ssh"
+      ssh.sudo_exec! "sudo mkdir -p #{ssh_dir}"
+      key_file = "#{ssh_dir}/authorized_keys"
+      ssh.sudo_exec! "sudo touch #{key_file}"
+      key_data = ssh.sudo_exec! "sudo cat #{key_file}"
+      key_line = ssh_authorized_keys_line
+      unless key_data.index(key_line)
+        ssh.sudo_exec! "sudo sh -c \"cat >> #{key_file}\"", "#{key_line}\n"
+      end
+    else
+      # SSH password installation.
+      ssh.sudo_exec! "sudo chpasswd", "#{username}:#{password}\n"
+    end
   end
 end

@@ -70,4 +70,38 @@ describe SshCredential do
       @credential.ssh_options.should have_key(:key_data)
     end
   end
+  
+  describe 'health_check' do
+    it 'should return true for a good account' do
+      ssh_credentials(:bunny1_pwnpet).health_check.should be_true
+    end
+  end
+  
+  describe 'install' do
+    let(:cred) { ssh_credentials(:bunny1_pwnpet) }
+    before { @ssh = cred.machine.ssh_session(cred) }
+    after { @ssh.close }
+    
+    describe 'with passworded root' do
+      before do
+        @root_cred = SshCredential.new :machine => machines(:bunny1),
+            :username => 'root', :password => "test_#{Time.now.to_f}"
+        @root_cred.install @ssh
+      end
+      it 'should validate root afterwards' do
+        @root_cred.health_check.should be_true
+      end
+    end
+    
+    describe 'with keyed root' do
+      before do
+        @root_cred = SshCredential.new :machine => machines(:bunny1),
+            :username => 'root', :key => SshCredential.new_key
+        @root_cred.install @ssh
+      end
+      it 'should validate root afterwards' do
+        @root_cred.health_check.should be_true
+      end
+    end
+  end
 end

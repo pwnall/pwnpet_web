@@ -37,12 +37,18 @@ class Machine < ActiveRecord::Base
       Net::SSH.start addr, user, opts do |session|
         session[:credential] = credential
         session[:address] = address
+        class <<session
+          include SshSessionExtensions
+        end
         yield session
       end
     else
       session = Net::SSH.start addr, user, opts
       session[:credential] = credential
       session[:address] = address
+      class <<session
+        include SshSessionExtensions
+      end
       session
     end
   end
