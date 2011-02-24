@@ -1,0 +1,31 @@
+<h1>Listing kernel_infos</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Release</th>
+    <th>Version</th>
+    <th>Architecture</th>
+    <th>Os</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @kernel_infos.each do |kernel_info| %>
+  <tr>
+    <td><%= kernel_info.name %></td>
+    <td><%= kernel_info.release %></td>
+    <td><%= kernel_info.version %></td>
+    <td><%= kernel_info.architecture %></td>
+    <td><%= kernel_info.os %></td>
+    <td><%= link_to 'Show', kernel_info %></td>
+    <td><%= link_to 'Edit', edit_kernel_info_path(kernel_info) %></td>
+    <td><%= link_to 'Destroy', kernel_info, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Kernel info', new_kernel_info_path %>

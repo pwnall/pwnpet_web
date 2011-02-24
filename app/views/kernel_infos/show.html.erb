@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @kernel_info.name %>
+</p>
+
+<p>
+  <b>Release:</b>
+  <%= @kernel_info.release %>
+</p>
+
+<p>
+  <b>Version:</b>
+  <%= @kernel_info.version %>
+</p>
+
+<p>
+  <b>Architecture:</b>
+  <%= @kernel_info.architecture %>
+</p>
+
+<p>
+  <b>Os:</b>
+  <%= @kernel_info.os %>
+</p>
+
+
+<%= link_to 'Edit', edit_kernel_info_path(@kernel_info) %> |
+<%= link_to 'Back', kernel_infos_path %>
