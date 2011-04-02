@@ -1,4 +1,6 @@
 PwnpetWeb::Application.routes.draw do
+  resources :kernel_infos
+
   resources :net_addresses
 
   resources :ssh_credentials
