@@ -1,13 +1,12 @@
 PwnpetWeb::Application.routes.draw do
+  config_vars
+
   resources :kernel_infos
-
   resources :net_addresses
-
+  resources :machines
   resources :ssh_credentials
 
   get "session/index"
-
-  resources :machines
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

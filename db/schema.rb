@@ -12,6 +12,13 @@
 
 ActiveRecord::Schema.define(:version => 20110223172838) do
 
+  create_table "config_vars", :force => true do |t|
+    t.string "name",  :null => false
+    t.binary "value", :null => false
+  end
+
+  add_index "config_vars", ["name"], :name => "index_config_vars_on_name", :unique => true
+
   create_table "kernel_infos", :force => true do |t|
     t.integer  "machine_id",   :null => false
     t.string   "name",         :null => false
