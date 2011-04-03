@@ -10,7 +10,7 @@ class CreateKernelInfos < ActiveRecord::Migration
 
       t.datetime :updated_at
     end
-    add_index :kernel_infos, :machine_id
+    add_index :kernel_infos, :machine_id, :null => false, :unique => true
   end
 
   def self.down

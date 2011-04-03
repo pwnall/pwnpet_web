@@ -1,0 +1,7 @@
+bunny1:
+  machine: bunny1
+  name: Linux
+  release: 2.6.38-3-generic
+  version: "#49-Ubuntu SMP Tue Mar 1 14:39:03 UTC 2011"
+  architecture: i686
+  os: GNU/Linux

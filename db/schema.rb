@@ -10,7 +10,19 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110217011648) do
+ActiveRecord::Schema.define(:version => 20110223172838) do
+
+  create_table "kernel_infos", :force => true do |t|
+    t.integer  "machine_id",   :null => false
+    t.string   "name",         :null => false
+    t.string   "release",      :null => false
+    t.string   "version",      :null => false
+    t.string   "architecture", :null => false
+    t.string   "os",           :null => false
+    t.datetime "updated_at"
+  end
+
+  add_index "kernel_infos", ["machine_id"], :name => "index_kernel_infos_on_machine_id", :unique => true
 
   create_table "machines", :force => true do |t|
     t.string "name",   :null => false
