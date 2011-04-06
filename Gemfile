@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '>= 3.0.0'
+gem 'rails', '>= 3.0.6'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -24,9 +24,9 @@ gem 'mysql2'
 # gem 'sqlite3-ruby', :require => 'sqlite3'
 # gem 'aws-s3', :require => 'aws/s3'
 gem 'configvars_rails', '>= 0.4.3'
-gem 'dnssd', '>= 1.4'
+gem 'dnssd', '>= 2.0'
 gem 'net-mdns', '>= 0.4'
-gem 'net-ssh', '>= 2.1.0', :require => 'net/ssh'
+gem 'net-ssh', '>= 2.1.4', :require => 'net/ssh'
 gem 'jquery-rails', '>= 0.2.7'
 
 # Bundle gems for the local environment. Make sure to
