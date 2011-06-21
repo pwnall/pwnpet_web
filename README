@@ -11,6 +11,7 @@ apt-get install libavahi-compat-libdnssd-dev
 Testing requires a VirtualBox VM with all default settings for Ubuntu, but add a
 second network adapter, configured as a Host-only Adapter. As an optimization,
 both network adapters can be switched to virtio-net (Paravirtualized Network).
+As further optimizations, Audio and USB can be disabled.
 
 When installing Ubuntu in the VM, use defaults for everything except:
 * Name: Pwnpet Tester
