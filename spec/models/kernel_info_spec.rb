@@ -5,8 +5,8 @@ describe KernelInfo do
   
   before do
     @info = KernelInfo.new :machine => machines(:bunny2),
-        :name => 'Linux', :release => '2.6.38-3-generic',
-        :version => '#49-Ubuntu SMP Tue Mar 1 14:39:03 UTC 2011',
+        :name => 'Linux', :release => '3.0-2-generic',
+        :version => '#3-Ubuntu SMP Fri Jun 24 19:09:43 UTC 2011',
         :architecture => 'i686', :os => 'GNU/Linux'
   end
   
@@ -73,7 +73,7 @@ describe KernelInfo do
       end
       
       it 'should fetch the release correctly' do
-        @info.release.should match(/^2\.6/)
+        @info.release.should match(/^[2-3]\.\d/)
       end
 
       it 'should fetch the version correctly' do

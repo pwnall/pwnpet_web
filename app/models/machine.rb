@@ -29,7 +29,10 @@ class Machine < ActiveRecord::Base
       credential = username_or_credential || ssh_credentials.first
     end
     user = credential.username
-    opts = credential.ssh_options
+    opts = {
+      :global_known_hosts_file => [], :user_known_hosts_file => [],
+      :paranoid => false
+    }.merge credential.ssh_options
     # TODO(pwnall): loop through all addresses until one works
     address = addresses.first
     addr = address.address
