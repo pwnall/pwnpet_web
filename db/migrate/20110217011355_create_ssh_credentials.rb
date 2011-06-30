@@ -1,5 +1,5 @@
 class CreateSshCredentials < ActiveRecord::Migration
-  def self.up
+  def change
     create_table :ssh_credentials do |t|
       t.integer :machine_id, :null => false
       t.string :username, :length => 32, :null => false
@@ -9,9 +9,5 @@ class CreateSshCredentials < ActiveRecord::Migration
     end
     add_index :ssh_credentials, [:machine_id, :username], :unique => true,
                                 :null => false
-  end
-
-  def self.down
-    drop_table :ssh_credentials
   end
 end

@@ -1,5 +1,5 @@
 class CreateKernelInfos < ActiveRecord::Migration
-  def self.up
+  def change
     create_table :kernel_infos do |t|
       t.integer :machine_id, :null => false
       t.string :name, :length => 64, :null => false
@@ -11,9 +11,5 @@ class CreateKernelInfos < ActiveRecord::Migration
       t.datetime :updated_at
     end
     add_index :kernel_infos, :machine_id, :null => false, :unique => true
-  end
-
-  def self.down
-    drop_table :kernel_infos
   end
 end
