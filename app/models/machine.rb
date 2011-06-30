@@ -29,6 +29,8 @@ class Machine < ActiveRecord::Base
       credential = username_or_credential || ssh_credentials.first
     end
     user = credential.username
+    # TODO(pwnall): look into generating a file with the known key for this
+    #               host, to prevent MITM attacks
     opts = {
       :global_known_hosts_file => [], :user_known_hosts_file => [],
       :paranoid => false
