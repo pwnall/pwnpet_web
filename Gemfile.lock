@@ -1,3 +1,10 @@
+PATH
+  remote: ../pwnstyles_rails
+  specs:
+    pwnstyles_rails (0.0.11)
+      rails (>= 3.0.0)
+      sass (>= 3.1.0)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -135,6 +142,7 @@ DEPENDENCIES
   mysql2 (>= 0.3.6)
   net-mdns (>= 0.4)
   net-ssh (>= 2.1.4)
+  pwnstyles_rails!
   rails (>= 3.1.0.rc4)
   rspec-rails (>= 2.6.0)
   sass-rails (~> 3.1.0.rc)

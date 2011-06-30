@@ -31,6 +31,7 @@ gem 'configvars_rails', '>= 0.4.3'
 gem 'dnssd', '>= 2.0'
 gem 'net-mdns', '>= 0.4'
 gem 'net-ssh', '>= 2.1.4', :require => 'net/ssh'
+gem 'pwnstyles_rails', :path => '../pwnstyles_rails'
 
 group :development, :test do
   gem 'rspec-rails', '>= 2.6.0'
