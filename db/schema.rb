@@ -19,6 +19,14 @@ ActiveRecord::Schema.define(:version => 20110223172838) do
 
   add_index "config_vars", ["name"], :name => "index_config_vars_on_name", :unique => true
 
+  create_table "facebook_tokens", :force => true do |t|
+    t.integer "user_id",                     :null => false
+    t.string  "external_uid", :limit => 32,  :null => false
+    t.string  "access_token", :limit => 128, :null => false
+  end
+
+  add_index "facebook_tokens", ["external_uid"], :name => "index_facebook_tokens_on_external_uid", :unique => true
+
   create_table "kernel_infos", :force => true do |t|
     t.integer  "machine_id",   :null => false
     t.string   "name",         :null => false
@@ -56,5 +64,17 @@ ActiveRecord::Schema.define(:version => 20110223172838) do
   end
 
   add_index "ssh_credentials", ["machine_id", "username"], :name => "index_ssh_credentials_on_machine_id_and_username", :unique => true
+
+  create_table "users", :force => true do |t|
+    t.string   "email",         :limit => 128, :null => false
+    t.string   "email_hash",    :limit => 64,  :null => false
+    t.string   "password_salt", :limit => 16
+    t.string   "password_hash", :limit => 64
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "users", ["email"], :name => "index_users_on_email", :unique => true
+  add_index "users", ["email_hash"], :name => "index_users_on_email_hash", :unique => true
 
 end

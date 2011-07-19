@@ -1,12 +1,13 @@
 PwnpetWeb::Application.routes.draw do
+  resource :session, :controller => 'session'
+
   config_vars
 
+  resources :users
+  resources :machines
   resources :kernel_infos
   resources :net_addresses
-  resources :machines
   resources :ssh_credentials
-
-  get "session/index"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
@@ -57,7 +58,7 @@ PwnpetWeb::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
-  root :to => "session#index"
+  root :to => "session#show"
 
   # See how all your routes lay out with "rake routes"
 

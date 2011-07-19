@@ -1,0 +1,25 @@
+<%= form_for @user, :url => session_path do |f| %>
+  <section class="fields">
+    <p class="field">
+      <%= f.label :email, 'Email' %>
+      <span class="value">
+        <%= f.email_field :email, :placeholder => 'you@gmail.com' %>
+      </span>
+    </p>
+    <p class="field">
+      <%= f.label :password, 'Password' %>
+      <span class="value">
+        <%= f.password_field :password,
+                             :placeholder => 'not your e-mail password' %>
+      </span>
+    </p>
+  </section>
+  
+  <p class="actions">
+    <%= f.submit 'Sign in' %>
+    
+    <% if @redirect_url %>
+    <%= hidden_field_tag :redirect_url, @redirect_url %>
+    <% end %>
+  </p>
+<% end %>

@@ -1,0 +1,18 @@
+<h2>Welcome to PwnPet</h2>
+
+<p>
+  <%= image_tag 'feature-machines.png', :alt => '' %>
+  Keep track of your machines in one place.
+</p>
+<p>
+  <%= image_tag 'feature-keys.png', :alt => '' %>
+  Store root SSH keys safely, never use password authentication.
+</p>
+<p>
+  <%= image_tag 'feature-automate.png', :alt => '' %>
+  Automate maintainance tasks and issue commands to all your machines at once.
+</p>
+
+<h2>Sign Up</h2>
+
+<%= render 'users/form', :user => @user || User.new %>

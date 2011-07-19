@@ -1,0 +1,10 @@
+<article id="sidebar">
+<% if current_user %>
+  <h2>Sidebar</h2>
+
+<% else %>
+  <h2>Sign In</h2>
+  
+  <%= render 'session/login_form', :user => @user || User.new %>
+<% end %>
+</article>

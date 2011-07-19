@@ -1,0 +1,50 @@
+<%= form_for(user) do |f| %>
+  <% if user.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h2>
+
+      <ul>
+        <% user.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <section class="fields">
+    <% if user.new_record? %>
+    <p class="field">
+      <%= f.label :email, 'Email' %>
+      <span class="value">
+          <%= f.text_field :email, :placeholder => 'you@email.com' %>
+      </span>
+    </p>
+    <% end %>
+    <% unless user.new_record? %>
+    <p class="field">
+      <%= label_tag :old_password, 'Old Password' %>
+      <span class="value">
+        <%= password_field_tag :old_password, '',
+                               :placeholder => "just making sure it's you" %>
+      </span>
+    </p>
+    <% end %>
+    <p class="field">
+      <%= f.label :password %>
+      <span class="value">
+        <%= f.password_field :password, :placeholder => 'be clever' %>
+      </span>
+    </p>
+    <p class="field">
+      <%= f.label :password_confirmation, 'Confirm Password' %>
+      <span class="value">
+        <%= f.password_field :password_confirmation,
+                             :placeholder => 'can you type that again?' %>
+      </span>
+    </p>
+  </section>
+  
+  <p class="actions">
+    <%= f.submit user.new_record? ? 'Create Account' : 'Update Account' %>
+  </p>
+<% end %>
