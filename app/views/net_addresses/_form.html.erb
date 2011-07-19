@@ -1,25 +1,20 @@
-<%= form_for(@net_address) do |f| %>
-  <% if @net_address.errors.any? %>
+<%= form_for(net_address) do |f| %>
+  <% if net_address.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@net_address.errors.count, "error") %> prohibited this net_address from being saved:</h2>
+      <h2><%= pluralize(net_address.errors.count, "error") %> prohibited this net_address from being saved:</h2>
 
       <ul>
-      <% @net_address.errors.full_messages.each do |msg| %>
+      <% net_address.errors.full_messages.each do |msg| %>
         <li><%= msg %></li>
       <% end %>
       </ul>
     </div>
   <% end %>
 
-  <div class="field">
-    <%= f.label :machine_id %><br />
-    <%= f.text_field :machine_id %>
-  </div>
-  <div class="field">
-    <%= f.label :address %><br />
-    <%= f.text_field :address %>
-  </div>
-  <div class="actions">
+  <%= render 'net_addresses/fields', :f => f %>
+
+  <p class="actions">
     <%= f.submit %>
-  </div>
+    <%= f.hidden_field :machine_id %>
+  </p>
 <% end %>

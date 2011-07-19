@@ -1,0 +1,22 @@
+<section class="fields">
+  <p class="field">
+    <%= f.label :username %><br />
+    <span class="value">
+      <%= f.text_field :username,
+                       :placeholder => 'account with SSH and sudo access' %>
+    </span>
+  </p>
+  <p class="field">
+    <%= f.label :password %><br />
+    <span class="value">
+      <%= f.password_field :password, :placeholder => 'SSH account password' %>
+    </span>
+  </p>
+  <p class="field">
+    <%= f.label :key %><br />
+    <span class="value">
+      <%= f.text_area :key,
+                :placeholder => 'SSH key, if available instead of password' %>
+    </span>
+  </p>
+</section>

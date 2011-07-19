@@ -25,6 +25,8 @@ class MachinesController < ApplicationController
   # GET /machines/new.xml
   def new
     @machine = Machine.new
+    @machine.addresses.build
+    @machine.ssh_credentials.build
 
     respond_to do |format|
       format.html # new.html.erb
