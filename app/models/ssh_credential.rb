@@ -26,6 +26,7 @@ class SshCredential < ActiveRecord::Base
   
   # Changes the real (unscrambled) password.
   def password=(new_password)
+    new_password = nil if new_password.blank?
     self.scrambled_password = new_password &&
                               self.class.scramble_password(new_password)
   end
@@ -33,6 +34,12 @@ class SshCredential < ActiveRecord::Base
   # The real (unscrambled) password.
   def password
     scrambled_password && scrambled_password.unpack('m').first
+  end
+  
+  # :nodoc: override key= to turn an empty string into nil
+  def key=(new_key)
+    new_key = nil if new_key.blank?
+    super(new_key)
   end
   
   # Generates a new key and assigns it to the key field.

@@ -1,16 +1,18 @@
 # A computer or VM.
 class Machine < ActiveRecord::Base
   # User-friendly machine name.
-  validates :name, :presence => true, :length => 1..32  
+  validates :name, :presence => true, :length => 1..32
   # Randomly generated ID. Immutable for the machine's lifetime.
   validates :uid, :presence => true, :length => 32..32, :uniqueness => true
   # Secret token shared by the machine and the management server.
   validates :secret, :presence => true, :length => 64..64
 
   # DNS or IP addresses that the machine is reachable by.
-  has_many :addresses, :class_name => 'NetAddress', :inverse_of => :machine
+  has_many :net_addresses, :inverse_of => :machine
+  accepts_nested_attributes_for :net_addresses, :allow_destroy => true
   # Credentials used to command the machine via SSH.
   has_many :ssh_credentials, :inverse_of => :machine
+  accepts_nested_attributes_for :ssh_credentials, :allow_destroy => true
 
   # Wraps Net::SSH.start.
   #
@@ -36,7 +38,7 @@ class Machine < ActiveRecord::Base
       :paranoid => false
     }.merge credential.ssh_options
     # TODO(pwnall): loop through all addresses until one works
-    address = addresses.first
+    address = net_addresses.first
     addr = address.address
     if Kernel.block_given?
       Net::SSH.start addr, user, opts do |session|

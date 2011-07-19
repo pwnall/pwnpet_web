@@ -1,15 +1,15 @@
 <nav>
   <ol>
     <li>
-      <%= link_to 'Submenu', '#' %>
+      <%= link_to 'Machines', machines_path %>
       <ol>
-        <li><%= link_to 'Item 1', '#' %></li>
-        <li><%= link_to 'Item 2', '#' %></li>
-        <li><%= link_to 'Item 3', '#' %></li>
+        <li><%= link_to 'All', machines_path %></li>
+        <li><%= link_to 'Healthy', machines_path %></li>
+        <li><%= link_to 'Offline', machines_path %></li>
       </ol>
     </li>
     <li>
-      <%= link_to 'Action', '#' %>
+      <%= link_to 'Jobs', '#' %>
     </li>
     <li>
       <% if current_user %>

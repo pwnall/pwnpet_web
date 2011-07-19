@@ -20,15 +20,20 @@
     </p>
   </section>
   
-  <h3>Network Addresses</h3>
-<%= f.fields_for(@machine.addresses) do |ff| %>
+  <fieldset>
+    <legend>DNS / IP Address</legend>
+<%= f.fields_for(:net_addresses) do |ff| %>
 <%= render 'net_addresses/fields', :f => ff %>
 <% end %>
+  </fieldset>
 
-  <h3>SSH Accounts</h3>
-<%= f.fields_for(@machine.ssh_credentials) do |ff| %>
+  <fieldset>
+    <legend>SSH Account</legend>
+<%= f.fields_for(:ssh_credentials) do |ff| %>
 <%= render 'ssh_credentials/fields', :f => ff %>
 <% end %>
+    </legend>
+  </fieldset>
   
   <p class="actions">
     <%= f.submit %>

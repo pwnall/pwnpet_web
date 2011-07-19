@@ -3,8 +3,7 @@
 <table>
   <tr>
     <th>Name</th>
-    <th>Uid</th>
-    <th>Secret</th>
+    <th>Addresses</th>
     <th></th>
     <th></th>
     <th></th>
@@ -13,8 +12,7 @@
 <% @machines.each do |machine| %>
   <tr>
     <td><%= machine.name %></td>
-    <td><%= machine.uid %></td>
-    <td><%= machine.secret %></td>
+    <td><%= machine.net_addresses.map(&:address).join(', ') %></td>
     <td><%= link_to 'Show', machine %></td>
     <td><%= link_to 'Edit', edit_machine_path(machine) %></td>
     <td><%= link_to 'Destroy', machine, :confirm => 'Are you sure?', :method => :delete %></td>

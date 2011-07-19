@@ -1,15 +1,22 @@
-<p id="notice"><%= notice %></p>
+<h2>Machine <%= @machine.name %></h2>
 
-<p>
-  <b>Name:</b>
-  <%= @machine.name %>
-</p>
+<p><%= link_to 'Edit', edit_machine_path(@machine) %></p>
 
 <p>
   <b>Uid:</b>
   <%= @machine.uid %>
 </p>
 
+<h3>Network addresses</h3>
+<ul>
+  <% @machine.net_addresses.each do |address| %>
+  <li><%= address.address %></li>
+  <% end %>
+</ul>
 
-<%= link_to 'Edit', edit_machine_path(@machine) %> |
-<%= link_to 'Back', machines_path %>
+<h3>SSH accounts</h3>
+<ul>
+  <% @machine.ssh_credentials.each do |credential| %>
+  <li><%= credential.username %></li>
+  <% end %>
+</ul>
