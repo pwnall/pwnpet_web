@@ -25,6 +25,7 @@ class MachinesController < ApplicationController
   # GET /machines/new.xml
   def new
     @machine = Machine.new
+    @machine.user = current_user
     @machine.net_addresses.build
     @machine.ssh_credentials.build
 
@@ -43,6 +44,7 @@ class MachinesController < ApplicationController
   # POST /machines.xml
   def create
     @machine = Machine.new(params[:machine])
+    @machine.user = current_user
 
     respond_to do |format|
       if @machine.save

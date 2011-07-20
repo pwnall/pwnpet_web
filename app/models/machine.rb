@@ -1,7 +1,12 @@
 # A computer or VM.
 class Machine < ActiveRecord::Base
+  # The user that the machine belongs to.
+  belongs_to :user, :inverse_of => :machines
+  validates :user, :presence => true
+  
   # User-friendly machine name.
-  validates :name, :presence => true, :length => 1..32
+  validates :name, :presence => true, :length => 1..32,
+                   :uniqueness => { :scope => :user_id }
   # Randomly generated ID. Immutable for the machine's lifetime.
   validates :uid, :presence => true, :length => 32..32, :uniqueness => true
   # Secret token shared by the machine and the management server.
@@ -13,6 +18,22 @@ class Machine < ActiveRecord::Base
   # Credentials used to command the machine via SSH.
   has_many :ssh_credentials, :inverse_of => :machine
   accepts_nested_attributes_for :ssh_credentials, :allow_destroy => true
+  
+  # Forms can only update these attributes.
+  attr_accessible :name, :net_addresses_attributes, :ssh_credentials_attributes
+  
+  # True if the user can edit the data connected to this machine.
+  #
+  # Users that can edit data can directly access sensitive things such as
+  # the SSH credentials (password / SSH key) used to root into the machine.
+  def can_edit?(user)
+    user == self.user
+  end
+  
+  # True if the user can establish a SSH session to the machine.
+  def can_access?(user)
+    user == self.user
+  end
 
   # Wraps Net::SSH.start.
   #

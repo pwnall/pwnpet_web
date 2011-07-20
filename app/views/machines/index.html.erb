@@ -15,7 +15,7 @@
     <td><%= machine.net_addresses.map(&:address).join(', ') %></td>
     <td><%= link_to 'Show', machine %></td>
     <td><%= link_to 'Edit', edit_machine_path(machine) %></td>
-    <td><%= link_to 'Destroy', machine, :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%= link_to 'Delete', machine, :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
 <% end %>
 </table>

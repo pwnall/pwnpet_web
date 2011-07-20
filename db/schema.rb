@@ -40,12 +40,14 @@ ActiveRecord::Schema.define(:version => 20110223172838) do
   add_index "kernel_infos", ["machine_id"], :name => "index_kernel_infos_on_machine_id", :unique => true
 
   create_table "machines", :force => true do |t|
-    t.string "name",   :null => false
-    t.string "uid",    :null => false
-    t.string "secret", :null => false
+    t.integer "user_id", :null => false
+    t.string  "name",    :null => false
+    t.string  "uid",     :null => false
+    t.string  "secret",  :null => false
   end
 
   add_index "machines", ["uid"], :name => "index_machines_on_uid", :unique => true
+  add_index "machines", ["user_id", "name"], :name => "index_machines_on_user_id_and_name", :unique => true
 
   create_table "net_addresses", :force => true do |t|
     t.integer  "machine_id", :null => false

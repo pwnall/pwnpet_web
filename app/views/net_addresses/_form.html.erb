@@ -1,7 +1,7 @@
 <%= form_for(net_address) do |f| %>
   <% if net_address.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(net_address.errors.count, "error") %> prohibited this net_address from being saved:</h2>
+      <h3><%= pluralize(net_address.errors.count, "error") %> prohibited this net_address from being saved:</h3>
 
       <ul>
       <% net_address.errors.full_messages.each do |msg| %>

@@ -17,5 +17,8 @@ class User < ActiveRecord::Base
     false
   end
 
-  # Add your extensions to the User class here.  
+  # Add your extensions to the User class here.
+  
+  # Machines managed by the user.
+  has_many :machines, :inverse_of => :user
 end

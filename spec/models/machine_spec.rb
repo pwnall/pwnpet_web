@@ -1,14 +1,19 @@
 require 'spec_helper'
 
 describe Machine do
-  fixtures :machines, :ssh_credentials, :net_addresses
+  fixtures :machines, :ssh_credentials, :net_addresses, :users
   
   before do
     @machine = Machine.new :name => 'bunny'
+    @machine.user = users(:john)
+  end
+  
+  it 'should require an owner' do
+    @machine.user = nil
+    @machine.should_not be_valid
   end
   
   it 'should validate with a name' do
-    @machine.save!
     @machine.should be_valid
   end
   
@@ -17,9 +22,38 @@ describe Machine do
     @machine.should_not be_valid
   end
   
+  it 'should require unique names' do
+    @machine.name = users(:john).machines.first.name
+    @machine.should_not be_valid
+  end
+  
   it 'should require unique IDs' do
     @machine.uid = machines(:bunny1).uid
     @machine.should_not be_valid
+  end
+  
+  describe 'can_edit?' do
+    it "should be true for the machine's owner" do
+      @machine.can_edit?(users(:john)).should be_true
+    end
+    it "should be false for another user" do
+      @machine.can_edit?(users(:jane)).should be_false
+    end
+    it "should be false for the nil user" do
+      @machine.can_edit?(nil).should be_false
+    end
+  end
+
+  describe 'can_access?' do
+    it "should be true for the machine's owner" do
+      @machine.can_access?(users(:john)).should be_true
+    end
+    it "should be false for another user" do
+      @machine.can_access?(users(:jane)).should be_false
+    end
+    it "should be false for the nil user" do
+      @machine.can_access?(nil).should be_false
+    end
   end
   
   describe 'ssh_credential_for' do

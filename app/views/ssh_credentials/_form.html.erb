@@ -1,7 +1,7 @@
 <%= form_for(ssh_credential) do |f| %>
   <% if ssh_credential.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(ssh_credential.errors.count, "error") %> prohibited this ssh_credential from being saved:</h2>
+      <h3><%= pluralize(ssh_credential.errors.count, "error") %> prohibited this ssh_credential from being saved:</h3>
 
       <ul>
       <% ssh_credential.errors.full_messages.each do |msg| %>
