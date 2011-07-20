@@ -6,8 +6,6 @@ PwnpetWeb::Application.routes.draw do
   resources :users
   resources :machines
   resources :kernel_infos
-  resources :net_addresses
-  resources :ssh_credentials
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
