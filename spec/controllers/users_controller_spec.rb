@@ -19,23 +19,55 @@ require 'spec_helper'
 # that an instance is receiving a specific message.
 
 describe UsersController do
+  fixtures :users
 
   # This should return the minimal set of attributes required to create a valid
   # User. As you add validations to User, be sure to
   # update the return value of this method accordingly.
   def valid_attributes
-    {}
+    {
+      :email => 'pwnall@pwnb.us',
+      :password => 'sekret',
+      :password_confirmation => 'sekret'
+    }
   end
 
   describe "GET index" do
+    let (:user) { User.create! valid_attributes }
+
+    it "does not work unless logged in" do
+      get :index
+      response.should be_forbidden
+    end
+    
+    it "does not work for a normal user" do
+      p self.class.ancestors
+      set_current_user user
+      get :index
+      response.should be_forbidden
+    end
+
     it "assigns all users as @users" do
-      user = User.create! valid_attributes
+      set_current_user user
+      User.should_receive(:can_list_users?).with(user).and_return(true)
       get :index
       assigns(:users).should eq([user])
     end
   end
 
   describe "GET show" do
+    it "does not work unless logged in" do
+      get :show, :id => user.id.to_s
+      response.should be_forbidden
+    end
+    
+    it "does not work for another user" do
+      set_current_user users(:john)
+      user = User.create! valid_attributes
+      get :show, :id => user.id.to_s
+      response.should be_forbidden
+    end
+    
     it "assigns the requested user as @user" do
       user = User.create! valid_attributes
       get :show, :id => user.id.to_s
