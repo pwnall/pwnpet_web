@@ -14,11 +14,13 @@ both network adapters can be switched to virtio-net (Paravirtualized Network).
 As further optimizations, Audio and USB can be disabled.
 
 When installing Ubuntu in the VM, use defaults for everything except:
-* Name: Pwnpet Tester
+* VM Name: Pwnpet Tester
 * Computer Name: pwnpet-test
+* (server) Partitioning: Guided - use entire disk
+* (server) Full name: Pwnpet Tester
 * Username: pwnpet
 * Password: b00mheadsh0t
-* Log in automatically
+* (desktop) Log in automatically
 
 After installing, issue the following commands:
     sudo apt-get update; sudo apt-get upgrade
