@@ -1,0 +1,29 @@
+<h1>Listing shell_sessions</h1>
+
+<table>
+  <tr>
+    <th>Machine</th>
+    <th>Username</th>
+    <th>Reason</th>
+    <th>Created at</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @shell_sessions.each do |shell_session| %>
+  <tr>
+    <td><%= shell_session.machine_id %></td>
+    <td><%= shell_session.username %></td>
+    <td><%= shell_session.reason %></td>
+    <td><%= shell_session.created_at %></td>
+    <td><%= link_to 'Show', shell_session %></td>
+    <td><%= link_to 'Edit', edit_shell_session_path(shell_session) %></td>
+    <td><%= link_to 'Destroy', shell_session, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Shell session', new_shell_session_path %>

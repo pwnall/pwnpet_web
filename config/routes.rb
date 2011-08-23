@@ -1,4 +1,6 @@
 PwnpetWeb::Application.routes.draw do
+  resources :shell_sessions
+
   resource :session, :controller => 'session'
 
   config_vars

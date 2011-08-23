@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Machine:</b>
+  <%= @shell_session.machine_id %>
+</p>
+
+<p>
+  <b>Username:</b>
+  <%= @shell_session.username %>
+</p>
+
+<p>
+  <b>Reason:</b>
+  <%= @shell_session.reason %>
+</p>
+
+<p>
+  <b>Created at:</b>
+  <%= @shell_session.created_at %>
+</p>
+
+
+<%= link_to 'Edit', edit_shell_session_path(@shell_session) %> |
+<%= link_to 'Back', shell_sessions_path %>

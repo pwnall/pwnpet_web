@@ -51,34 +51,10 @@ class Machine < ActiveRecord::Base
     else
       credential = username_or_credential || ssh_credentials.first
     end
-    user = credential.username
-    # TODO(pwnall): look into generating a file with the known key for this
-    #               host, to prevent MITM attacks
-    opts = {
-      :global_known_hosts_file => [], :user_known_hosts_file => [],
-      :paranoid => false
-    }.merge credential.ssh_options
     # TODO(pwnall): loop through all addresses until one works
     address = net_addresses.first
-    addr = address.address
-    if Kernel.block_given?
-      Net::SSH.start addr, user, opts do |session|
-        session[:credential] = credential
-        session[:address] = address
-        class <<session
-          include SshSessionExtensions
-        end
-        yield session
-      end
-    else
-      session = Net::SSH.start addr, user, opts
-      session[:credential] = credential
-      session[:address] = address
-      class <<session
-        include SshSessionExtensions
-      end
-      session
-    end
+    
+    ShellSession.ssh address, username
   end
   
   # The SSH login information for a username. nil if not found
