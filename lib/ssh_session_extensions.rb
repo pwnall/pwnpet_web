@@ -26,10 +26,14 @@ module SshSessionExtensions
         channel.on_data do |_, data|
           stdout << data
           if sudo_prompt.nil?
-            if separator_index = stdout.index("\n") || stdout.index(":")
-              first_line = stdout[0, separator_index]
-              sudo_prompt = (/sudo.*password/i =~ first_line) ? true : false
-              channel.send_data "#{password}\n" if sudo_prompt
+            if /sudo[^\n]*password/i =~ stdout
+              sudo_prompt = true
+              channel.send_data "#{password}\n"
+            else
+              lines = stdout.split("\n").map(&:strip).reject(&:empty?)
+              unless lines.all? { |line| /sudo/ =~ line }
+                sudo_prompt = false
+              end
             end
           elsif !input_sent
             channel.send_data input
