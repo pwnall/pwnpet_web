@@ -50,10 +50,11 @@ class SshCredential < ActiveRecord::Base
   # Checks that the credentials work by using them for a SSH session.
   def health_check
     begin
-      machine.ssh_session(self) do |ssh|
-        return ssh.exec!("echo 42") == "42\n"
-      end
-    rescue
+      session = machine.shell 'Verify SSH credential', self
+      result = session && session.exec!("echo 42") == "42\n"
+      session.close if session
+      result
+    rescue Net::SSH::Exception
       return false
     end
   end
@@ -94,29 +95,31 @@ class SshCredential < ActiveRecord::Base
     OpenSSL::PKey::RSA.new(2048).to_pem
   end
   
-  # Installs this credential into a machine via SSH.
+  # Installs this credential into a machine via a command shell session.
   #
   # After this call, the credential can be used to log into the machine. The
   # credential's user should already be created.
   #
   # Args:
-  #   ssh:: the Net::SSH session 
-  def install(ssh)
+  #   shell_session:: the ShellSession used to install the credentials; the
+  #                   session should have superuser privileges (sudo)
+  def install(shell_session)
     if key
-      # SSH key installation.
+      # SSH public key.
       home_dir = (username == 'root') ? '/root' : "/home/#{username}"
       ssh_dir = "#{home_dir}/.ssh"
-      ssh.sudo_exec! "sudo mkdir -p #{ssh_dir}"
+      shell_session.sudo_exec! "sudo mkdir -p #{ssh_dir}"
       key_file = "#{ssh_dir}/authorized_keys"
-      ssh.sudo_exec! "sudo touch #{key_file}"
-      key_data = ssh.sudo_exec! "sudo cat #{key_file}"
+      shell_session.sudo_exec! "sudo touch #{key_file}"
+      key_data = shell_session.sudo_exec! "sudo cat #{key_file}"
       key_line = ssh_authorized_keys_line
       unless key_data.index(key_line)
-        ssh.sudo_exec! "sudo sh -c \"cat >> #{key_file}\"", "#{key_line}\n"
+        shell_session.sudo_exec! %Q|sudo sh -c "cat >> #{key_file}"|,
+                                 key_line + "\n"
       end
     else
-      # SSH password installation.
-      ssh.sudo_exec! "sudo chpasswd", "#{username}:#{password}\n"
+      # Login password.
+      shell_session.sudo_exec! "sudo chpasswd", "#{username}:#{password}\n"
     end
   end
 end

@@ -49,12 +49,12 @@ describe KernelInfo do
     @info.should_not be_valid
   end
   
-  describe 'update_by_ssh' do
+  describe 'update_from_shell' do
     describe 'with given session' do
       let(:session) { mock('ssh session', :exec! => 'exec result') }
 
       before do
-        @info.update_by_ssh session
+        @info.update_from_shell session
       end
       
       it 'should use the session' do
@@ -65,7 +65,7 @@ describe KernelInfo do
     describe 'without a given session' do
       before do
         @info = KernelInfo.new :machine => machines(:bunny1)
-        @info.update_by_ssh
+        @info.update_from_shell
       end
       
       it 'should use the machine session' do

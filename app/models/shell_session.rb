@@ -5,13 +5,11 @@
 # never be instantiated based on params from a Web request.
 class ShellSession < ActiveRecord::Base
   # The machine that the session is open to.
-  belongs_to :machine
+  belongs_to :machine, :inverse_of => :shell_sessions
   validates :machine, :presence => true
-  attr_protected :machine
   
   # The username used to log in on the machine for this session.
   validates :username, :presence => true, :length => 1..32
-  attr_protected :username
   
   # User-friendly motivation why the commands in this session were issued.
   validates :reason, :length => { :in => 1..1024, :allow_nil => true,
@@ -24,9 +22,27 @@ class ShellSession < ActiveRecord::Base
     
   # Net::SSH session behind a live shell session.
   #
-  # This is an implementation detail.
-  attr_accessor :net_ssh
-  protected :net_ssh, :net_ssh=
+  # This is set in ShellSession::ssh and should not be modified anywhere else.
+  def net_ssh=(new_net_ssh)
+    unless new_record?
+      raise "Please don't mess with net_ssh="
+    end
+    @net_ssh = new_net_ssh
+  end
+  
+  # SshCredential used for a live session.
+  #
+  # This is set in ShellSession::ssh and should not be modified anywhere else.
+  # 
+  def live_ssh_credential=(new_live_ssh_credential)
+    unless new_record?
+      raise "Please don't mess with live_ssh_credential="
+    end
+    @live_ssh_credential = new_live_ssh_credential
+  end
+  
+  # Attributes that can be modified by Web forms.
+  attr_accessible :reason
   
   # Creates a live SSH session backed by Net::SSH.
   #
@@ -40,21 +56,25 @@ class ShellSession < ActiveRecord::Base
   def self.ssh(net_address, ssh_credential, reason)
     machine = net_address.machine
     address = net_address.address
-    username = credential.username
+    username = ssh_credential.username
     
     # TODO(pwnall): look into generating a file with the known key for this
     #               host, to prevent MITM attacks
-    opts = {
+    ssh_options = {
       :global_known_hosts_file => [], :user_known_hosts_file => [],
       :paranoid => false
-    }.merge credential.ssh_options
+    }.merge ssh_credential.ssh_options
     
     begin
-      net_ssh = Net::SSH.start address, username, options
-      session = self.create! :machine => machine, :username => username,
-                             :reason => reason
-      session.net_ssh = net_ssh
-      session
+      net_ssh = Net::SSH.start address, username, ssh_options
+      shell = self.new
+      shell.machine = machine
+      shell.username = username
+      shell.reason = reason
+      shell.net_ssh = net_ssh
+      shell.live_ssh_credential = ssh_credential
+      shell.save!
+      shell
     rescue Net::SSH::Exception
       nil
     end
@@ -86,10 +106,6 @@ class ShellSession < ActiveRecord::Base
   #
   # Returns the program's stdout and stderr.
   def sudo_exec!(command, input = nil)
-    unless password = self[:credential].password
-      raise ArgumentError, "sudo requires password credential" 
-    end
-    
     stdout = String.new
     sudo_prompt = nil
     input_sent = !input
@@ -105,6 +121,9 @@ class ShellSession < ActiveRecord::Base
           if sudo_prompt.nil?
             if /sudo[^\n]*password/i =~ stdout
               sudo_prompt = true
+              unless password = @live_ssh_credential.password
+                raise ArgumentError, "sudo requires password credential" 
+              end
               channel.send_data "#{password}\n"
             else
               lines = stdout.split("\n").map(&:strip).reject(&:empty?)

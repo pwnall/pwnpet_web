@@ -13,11 +13,14 @@ class Machine < ActiveRecord::Base
   validates :secret, :presence => true, :length => 64..64
 
   # DNS or IP addresses that the machine is reachable by.
-  has_many :net_addresses, :inverse_of => :machine
+  has_many :net_addresses, :inverse_of => :machine, :dependent => :destroy
   accepts_nested_attributes_for :net_addresses, :allow_destroy => true
   # Credentials used to command the machine via SSH.
-  has_many :ssh_credentials, :inverse_of => :machine
+  has_many :ssh_credentials, :inverse_of => :machine, :dependent => :destroy
   accepts_nested_attributes_for :ssh_credentials, :allow_destroy => true
+  
+  # Command shell sessions established to this machine.
+  has_many :shell_sessions, :inverse_of => :machine, :dependent => :destroy
   
   # Forms can only update these attributes.
   attr_accessible :name, :net_addresses_attributes, :ssh_credentials_attributes
@@ -35,17 +38,15 @@ class Machine < ActiveRecord::Base
     user == self.user
   end
 
-  # Wraps Net::SSH.start.
+  # Creates a live command shell session connected to this machine.
   #
   # Args:
-  #   username_or_credential:: credential to be used for logging in, or the
-  #                            username whose credential will be used to log in
+  #   reason:: explanation for the shell session, logged and user-visible
+  #   username_or_credential:: credentials to be used for logging in, or the
+  #                            username whose credentials will be used to log in
   #
-  # Returns a Net::SSH::Session 
-  #
-  # If a block is given, the SSH session is given to it, and then closed when
-  # the block completes.
-  def ssh_session(username_or_credential = nil)
+  # Returns a ShellSession 
+  def shell(reason = nil, username_or_credential = nil)
     if username_or_credential && username_or_credential.respond_to?(:to_str)
       credential = ssh_credential_for username_or_credential
     else
@@ -54,7 +55,7 @@ class Machine < ActiveRecord::Base
     # TODO(pwnall): loop through all addresses until one works
     address = net_addresses.first
     
-    ShellSession.ssh address, username
+    ShellSession.ssh address, credential, reason
   end
   
   # The SSH login information for a username. nil if not found

@@ -75,38 +75,27 @@ describe Machine do
     end
   end
   
-  describe 'ssh_session' do
-    describe 'when given a block' do
-      before :each do
-        machines(:bunny1).ssh_session do |ssh|
-          @yield_session = ssh
-          @yield_result = ssh.exec!("echo 42")
-        end
+  describe 'shell' do
+    describe 'when given a username' do
+      before do
+        @shell = machines(:bunny1).shell 'RSpec', 'pwnpet'
       end
-      
-      it 'should yield a session' do
-        @yield_result.should == "42\n"
-      end
-      it 'should yield a session with the credential used' do
-        @yield_session[:credential].should == ssh_credentials(:bunny1_pwnpet)
-      end
-      it 'should yield a session with the address used' do
-        @yield_session[:address].should == net_addresses(:bunny1_mdns)
-      end
-    end
-    
-    describe 'when not given a block' do
-      before(:each) { @ssh_session = machines(:bunny1).ssh_session('pwnpet') }
-      after(:each) { @ssh_session.close }
+      after { @shell && @shell.close }
 
-      it 'should return a session' do
-        @ssh_session.exec!("echo 42").should == "42\n"
+      it 'should return a ShellSession' do
+        @shell.should be_kind_of(ShellSession)
       end
-      it 'should return a session with the credential used' do
-        @ssh_session[:credential].should == ssh_credentials(:bunny1_pwnpet)
+      it 'should return a saved record' do
+        @shell.should_not be_new_record
       end
-      it 'should return a session with the address used' do
-        @ssh_session[:address].should == net_addresses(:bunny1_mdns)
+      it 'should return a live session' do
+        @shell.exec!("echo 42").should == "42\n"
+      end
+      it 'should return a session for the given machine' do
+        @shell.machine.should == machines(:bunny1)
+      end
+      it 'should return a session with the correct username set' do
+        @shell.username.should == 'pwnpet'
       end
     end
   end

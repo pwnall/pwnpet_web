@@ -78,15 +78,15 @@ describe SshCredential do
   end
   
   describe 'install' do
-    let(:cred) { ssh_credentials(:bunny1_pwnpet) }
-    before { @ssh = cred.machine.ssh_session(cred) }
-    after { @ssh.close }
+    let(:credential) { ssh_credentials :bunny1_pwnpet }
+    before { @shell = credential.machine.shell 'RSpec', credential }
+    after { @shell && @shell.close }
     
     describe 'with passworded root' do
       before do
         @root_cred = SshCredential.new :machine => machines(:bunny1),
             :username => 'root', :password => "test_#{Time.now.to_f}"
-        @root_cred.install @ssh
+        @root_cred.install @shell
       end
       it 'should validate root afterwards' do
         @root_cred.health_check.should be_true
@@ -97,7 +97,7 @@ describe SshCredential do
       before do
         @root_cred = SshCredential.new :machine => machines(:bunny1),
             :username => 'root', :key => SshCredential.new_key
-        @root_cred.install @ssh
+        @root_cred.install @shell
       end
       it 'should validate root afterwards' do
         @root_cred.health_check.should be_true

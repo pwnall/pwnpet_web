@@ -25,18 +25,19 @@ class KernelInfo < ActiveRecord::Base
   # The updated attributes are not automatically saved to the database.
   #
   # Args:
-  #    ssh:: SSH session obtained from Machine#ssh_session (optional)
+  #    shell_session:: ShellSession instance to use; if not given, a new shell
+  #                    will be opened, used, and closed
   #
   # Returns self, for call chaining.
-  def update_by_ssh(ssh = nil)
-    ssh ||= machine.ssh_session
-    
+  def update_from_shell(shell_session = nil)
+    shell = shell_session || machine.shell('Update cached kernel information.')
     [
       [:name, '-s'], [:release, '-r'], [:version, '-v'], [:architecture, '-m'],
       [:os, '-o']
     ].each do |property, cli_arg|
-      send :"#{property}=", ssh.exec!("uname #{cli_arg}").strip
+      send :"#{property}=", shell.exec!("uname #{cli_arg}").strip
     end
+    shell.close unless shell == shell_session
     self
   end
 end
