@@ -26,12 +26,12 @@ gem 'therubyracer'
 # To use debugger
 # gem 'ruby-debug'
 
-gem 'authpwn_rails', '>= 0.9.0'
+gem 'authpwn_rails', '>= 0.9.2'
 gem 'configvars_rails', '>= 0.4.5'
 gem 'dnssd', '>= 2.0'
 gem 'net-mdns', '>= 0.4'
 gem 'net-ssh', '>= 2.1.4', :require => 'net/ssh'
-gem 'pwnstyles_rails', '>= 0.1.0', :path => '../pwnstyles_rails'
+gem 'pwnstyles_rails', '>= 0.1.0'
 
 group :development, :test do
   gem 'rspec-rails', '>= 2.6.0'

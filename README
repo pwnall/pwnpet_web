@@ -26,4 +26,4 @@ After installing, issue the following commands:
     sudo apt-get update; sudo apt-get upgrade
     sudo apt-get install openssh-server avahi-daemon
     # The following is an optional speed optimization.
-    sudo apt-get install virtualbox-ose-guest-dkms virtualbox-ose-guest-utils virtualbox-ose-guest-x11
+    sudo apt-get install virtualbox-guest-dkms virtualbox-guest-utils virtualbox-guest-x11

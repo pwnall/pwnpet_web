@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe SessionController do
 
-  describe "GET 'index'" do
+  describe "GET 'show'" do
     it "should be successful" do
-      get 'index'
+      get 'show'
       response.should be_success
     end
   end

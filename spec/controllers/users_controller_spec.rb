@@ -19,8 +19,6 @@ require 'spec_helper'
 # that an instance is receiving a specific message.
 
 describe UsersController do
-  fixtures :users
-
   # This should return the minimal set of attributes required to create a valid
   # User. As you add validations to User, be sure to
   # update the return value of this method accordingly.
@@ -30,6 +28,11 @@ describe UsersController do
       :password => 'sekret',
       :password_confirmation => 'sekret'
     }
+  end
+  
+  let(:other_user) do
+    User.create! :email => 'costan@gmail.com',
+                 :password => 'p', :password_confirmation => 'p'
   end
 
   describe "GET index" do
@@ -41,37 +44,36 @@ describe UsersController do
     end
     
     it "does not work for a normal user" do
-      p self.class.ancestors
-      set_current_user user
+      set_session_current_user user
       get :index
       response.should be_forbidden
     end
 
     it "assigns all users as @users" do
-      set_current_user user
+      set_session_current_user user
       User.should_receive(:can_list_users?).with(user).and_return(true)
       get :index
-      assigns(:users).should eq([user])
+      assigns(:users).should == [user]
     end
   end
 
   describe "GET show" do
+    let (:user) { User.create! valid_attributes }
+    
     it "does not work unless logged in" do
       get :show, :id => user.id.to_s
       response.should be_forbidden
     end
     
     it "does not work for another user" do
-      set_current_user users(:john)
-      user = User.create! valid_attributes
+      set_session_current_user other_user
       get :show, :id => user.id.to_s
       response.should be_forbidden
     end
     
     it "assigns the requested user as @user" do
-      user = User.create! valid_attributes
       get :show, :id => user.id.to_s
-      assigns(:user).should eq(user)
+      assigns(:user).should == user
     end
   end
 
@@ -83,10 +85,23 @@ describe UsersController do
   end
 
   describe "GET edit" do
-    it "assigns the requested user as @user" do
-      user = User.create! valid_attributes
+    let(:user) { User.create! valid_attributes }
+    
+    it "does not work unless logged in" do
       get :edit, :id => user.id.to_s
-      assigns(:user).should eq(user)
+      response.should be_forbidden
+    end
+    
+    it "does not work for another user" do
+      set_session_current_user other_user
+      get :edit, :id => user.id.to_s
+      response.should be_forbidden
+    end
+    
+    it "assigns the requested user as @user" do
+      set_session_current_user user
+      get :edit, :id => user.id.to_s
+      assigns(:user).should == user
     end
   end
 
