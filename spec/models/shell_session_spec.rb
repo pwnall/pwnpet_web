@@ -26,4 +26,40 @@ describe ShellSession do
       end
     end
   end
+  
+  before do
+    @session = ShellSession.new
+    @session.machine = machines(:bunny1)
+    @session.username = ssh_credentials(:bunny1_pwnpet).username
+    @session.reason = 'Test validation'
+  end
+  
+  it 'should validate a good session' do
+    @session.should be_valid
+  end
+  
+  it 'should require a machine' do
+    @session.machine = nil
+    @session.should_not be_valid
+  end
+  
+  it 'should reject a nil username' do
+    @session.username = nil
+    @session.should_not be_valid
+  end
+
+  it 'should reject an empty username' do
+    @session.username = ''
+    @session.should_not be_valid
+  end
+
+  it 'should coerce an empty reason to nil' do
+    @session.reason = ''
+    @session.reason.should be_nil
+  end
+
+  it 'should accept a nil reason' do
+    @session.reason = nil
+    @session.should be_valid
+  end
 end

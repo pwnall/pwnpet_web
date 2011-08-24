@@ -27,3 +27,9 @@ After installing, issue the following commands:
     sudo apt-get install openssh-server avahi-daemon
     # The following is an optional speed optimization.
     sudo apt-get install virtualbox-guest-dkms virtualbox-guest-utils virtualbox-guest-x11
+
+If installing Ubuntu Server, you might need to add the following lines to
+/etc/network/interfaces:
+
+    auto eth1
+    iface eth1 inet dhcp
