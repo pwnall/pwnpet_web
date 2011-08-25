@@ -1,6 +1,4 @@
 PwnpetWeb::Application.routes.draw do
-  resources :shell_sessions
-
   resource :session, :controller => 'session'
 
   config_vars
@@ -8,6 +6,8 @@ PwnpetWeb::Application.routes.draw do
   resources :users
   resources :machines
   resources :kernel_infos
+  resources :command_results
+  resources :shell_sessions
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

@@ -1,0 +1,33 @@
+<h1>Listing command_results</h1>
+
+<table>
+  <tr>
+    <th>Shell session</th>
+    <th>Command</th>
+    <th>Stdin</th>
+    <th>Stdout</th>
+    <th>Stderr</th>
+    <th>Exit code</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @command_results.each do |command_result| %>
+  <tr>
+    <td><%= command_result.shell_session_id %></td>
+    <td><%= command_result.command %></td>
+    <td><%= command_result.stdin %></td>
+    <td><%= command_result.stdout %></td>
+    <td><%= command_result.stderr %></td>
+    <td><%= command_result.exit_code %></td>
+    <td><%= link_to 'Show', command_result %></td>
+    <td><%= link_to 'Edit', edit_command_result_path(command_result) %></td>
+    <td><%= link_to 'Destroy', command_result, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Command result', new_command_result_path %>

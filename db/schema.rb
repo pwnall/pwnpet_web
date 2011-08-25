@@ -10,7 +10,19 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110822111739) do
+ActiveRecord::Schema.define(:version => 20110824161334) do
+
+  create_table "command_results", :force => true do |t|
+    t.integer  "shell_session_id", :null => false
+    t.integer  "exit_code"
+    t.text     "command",          :null => false
+    t.text     "stdin"
+    t.text     "stdout",           :null => false
+    t.text     "stderr",           :null => false
+    t.datetime "created_at"
+  end
+
+  add_index "command_results", ["shell_session_id", "id"], :name => "index_command_results_on_shell_session_id_and_id", :unique => true
 
   create_table "config_vars", :force => true do |t|
     t.string "name",  :null => false

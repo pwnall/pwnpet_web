@@ -19,6 +19,10 @@ class ShellSession < ActiveRecord::Base
     new_reason = nil if new_reason.blank?
     super new_reason
   end
+  
+  # Log of all commands issued using this session.
+  has_many :command_results, :inverse_of => :shell_session,
+                             :dependent => :destroy
     
   # Net::SSH session behind a live shell session.
   #
@@ -88,23 +92,75 @@ class ShellSession < ActiveRecord::Base
     @net_ssh = nil
   end
   
-  # Executes a sudo command, supplying the user's password if necessary.
+  # Executes a command that is expected to succeed.
   #
   # Args:
-  #   command:: the command to execute (should start with 'sudo ')
+  #   command:: the command to be executed
+  #   input:: optional data to be fed to the program's stdin 
   #
-  # Returns the program's stdout and stderr.
-  def exec!(command)
-    @net_ssh.exec! command
+  # Returns the command's stdout. Raises an error if the command does not
+  # complete successfully.
+  def exec!(command, input = nil)
+    result = exec command, input
+    return result.stdout if result.succeeded?
+    
+    raise "exec! command exited with non-zero code #{result.exit_code}"
+  end
+  
+  # Executes a command.
+  #
+  # Args:
+  #   command:: the command to be executed
+  #   input:: optional data to be fed to the program's stdin 
+  #
+  # Returns a CommandResult with the result of the command's execution. Blocks
+  # until the command is executed.
+  def exec(command, input = nil)
+    result = command_results.build
+    result.command = command
+    exit_code = nil
+    ssh_channel = @net_ssh.open_channel do |channel|
+      channel.exec command do |_, success|
+        if success
+          channel.send_data input if input
+          channel.eof!
+          channel.on_data do |_, data|
+            result.append_to_stdout! data
+          end
+          channel.on_extended_data do |_, type, data|
+            result.append_to_stderr! data if type == :stderr
+          end
+          channel.on_request 'exit-status' do |_, data|
+            exit_code = data.read_long
+          end
+          channel.on_request 'exit-signal' do |_, data|
+            # TODO(pwnall): ammend CommandResult to record this properly
+            exit_code = data.read_long
+          end
+        else
+          # TODO(pwnall): ammend CommandResult to record this properly
+          exit_code = 255
+          channel.close
+        end
+      end
+    end
+    ssh_channel.wait
+    result.completed! exit_code || 0
   end
 
-  # Executes a sudo command, supplying the user's password if necessary.
+  # Executes a sudo command, using the password in the session credentials.
+  #
+  # sudo is special because it requires a terminal session (pty), and it may
+  # prompt for the password of the logged in user. This method sets up the pty
+  # correctly, and supplies the password if and only if prompted for it.
   #
   # Args:
   #   command:: the command to execute (should start with 'sudo ')
   #   input:: optional content to be fed to the program's stdin
   #
-  # Returns the program's stdout and stderr.
+  # Returns a CommandResult with the result of the command's execution. Blocks
+  # until the command is executed. The CommandResult's stdout or stderr may
+  # contain the sudo password prompt.
   def sudo_exec!(command, input = nil)
     stdout = String.new
     sudo_prompt = nil

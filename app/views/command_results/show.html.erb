@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Shell session:</b>
+  <%= @command_result.shell_session_id %>
+</p>
+
+<p>
+  <b>Command:</b>
+  <%= @command_result.command %>
+</p>
+
+<p>
+  <b>Stdin:</b>
+  <%= @command_result.stdin %>
+</p>
+
+<p>
+  <b>Stdout:</b>
+  <%= @command_result.stdout %>
+</p>
+
+<p>
+  <b>Stderr:</b>
+  <%= @command_result.stderr %>
+</p>
+
+<p>
+  <b>Exit code:</b>
+  <%= @command_result.exit_code %>
+</p>
+
+
+<%= link_to 'Edit', edit_command_result_path(@command_result) %> |
+<%= link_to 'Back', command_results_path %>
