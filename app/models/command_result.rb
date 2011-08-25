@@ -12,13 +12,13 @@ class CommandResult < ActiveRecord::Base
   
   # The exit code of the process that executed the command.
   validates :exit_code, :numericality => { :allow_nil => true,
-      :integer_only => true, :greater_or_equal_to => 0 }
+      :integer_only => true, :greater_than_or_equal_to => 0 }
   # The data fed to the standard input of the process that executed the command.
   validates :stdin, :length => { :in => 0..64.kilobytes, :allow_nil => true }
   # The standard output of the process that executed the command.
-  validates :stdout, :length => { :in => 0..64.kilobytes, :allow_nil => false }
+  validates :stdout, :length => 0..64.kilobytes, :exclusion => [nil]
   # The standard error output of the process that executed the command.
-  validates :stderr, :length => { :in => 0..64.kilobytes, :allow_nil => false }
+  validates :stderr, :length => 0..64.kilobytes, :exclusion => [nil]
   
   # No attributes can be changed from a Web form.
   attr_accessible
@@ -31,6 +31,18 @@ class CommandResult < ActiveRecord::Base
   # True if the command finished executing.
   def completed?
     !exit_code.nil?
+  end
+  
+  # Records the beginning of a command's execution.
+  def start!(command, stdin = nil)
+    raise "Command already finished executing" if completed?
+    raise "Command already started executing" unless new_record?
+    self.command = command
+    self.stdin = stdin
+    self.stdout = ''
+    self.stderr = ''
+    save!
+    self
   end
   
   # Records new data coming from the standard output of the command's process.

@@ -117,7 +117,7 @@ class ShellSession < ActiveRecord::Base
   # until the command is executed.
   def exec(command, input = nil)
     result = command_results.build
-    result.command = command
+    result.start! command, input
     exit_code = nil
     ssh_channel = @net_ssh.open_channel do |channel|
       channel.exec command do |_, success|

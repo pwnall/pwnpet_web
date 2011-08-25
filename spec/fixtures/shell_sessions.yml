@@ -1,4 +1,4 @@
-bunny1:
+bunny1_update:
   machine: bunny1
   username: root
   reason: Manual package upgrade.
