@@ -30,7 +30,10 @@ gem 'authpwn_rails', '>= 0.9.2'
 gem 'configvars_rails', '>= 0.4.5'
 gem 'dnssd', '>= 2.0'
 gem 'net-mdns', '>= 0.4'
+gem 'net-scp', '>= 1.0.4', :require => 'net/scp'
+gem 'net-sftp', '>= 2.0.5', :require => 'net/sftp'
 gem 'net-ssh', '>= 2.1.4', :require => 'net/ssh'
+gem 'net-ssh-gateway', '>= 1.1.0', :require => 'net/ssh/gateway'
 gem 'pwnstyles_rails', '>= 0.1.0'
 
 group :development, :test do
