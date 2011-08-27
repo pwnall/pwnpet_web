@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110824161334) do
+ActiveRecord::Schema.define(:version => 20110826181355) do
 
   create_table "command_results", :force => true do |t|
     t.integer  "shell_session_id", :null => false
@@ -50,6 +50,15 @@ ActiveRecord::Schema.define(:version => 20110824161334) do
   end
 
   add_index "kernel_infos", ["machine_id"], :name => "index_kernel_infos_on_machine_id", :unique => true
+
+  create_table "machine_activations", :force => true do |t|
+    t.integer  "machine_id",     :null => false
+    t.boolean  "password_reset", :null => false
+    t.datetime "created_at",     :null => false
+    t.datetime "completed_at"
+  end
+
+  add_index "machine_activations", ["machine_id"], :name => "index_machine_activations_on_machine_id", :unique => true
 
   create_table "machines", :force => true do |t|
     t.integer "user_id", :null => false

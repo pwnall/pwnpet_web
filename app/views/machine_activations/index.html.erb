@@ -1,0 +1,25 @@
+<h1>Listing machine_activations</h1>
+
+<table>
+  <tr>
+    <th>Machine</th>
+    <th>Password reset</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @machine_activations.each do |machine_activation| %>
+  <tr>
+    <td><%= machine_activation.machine_id %></td>
+    <td><%= machine_activation.password_reset %></td>
+    <td><%= link_to 'Show', machine_activation %></td>
+    <td><%= link_to 'Edit', edit_machine_activation_path(machine_activation) %></td>
+    <td><%= link_to 'Destroy', machine_activation, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Machine activation', new_machine_activation_path %>

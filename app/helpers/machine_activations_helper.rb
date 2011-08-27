@@ -1,0 +1,2 @@
+module MachineActivationsHelper
+end

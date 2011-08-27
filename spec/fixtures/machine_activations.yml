@@ -1,0 +1,9 @@
+bunny1:
+  machine: bunny1
+  password_reset: true
+
+bunny2:
+  machine: bunny2
+  password_reset: true
+  created_at: Fri Aug 26 15:05:43 -0400 2011
+  completed_at: Fri Aug 26 15:05:53 -0400 2011

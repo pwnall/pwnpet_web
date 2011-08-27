@@ -1,0 +1,25 @@
+<%= form_for(@machine_activation) do |f| %>
+  <% if @machine_activation.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@machine_activation.errors.count, "error") %> prohibited this machine_activation from being saved:</h2>
+
+      <ul>
+      <% @machine_activation.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :machine_id %><br />
+    <%= f.number_field :machine_id %>
+  </div>
+  <div class="field">
+    <%= f.label :password_reset %><br />
+    <%= f.check_box :password_reset %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

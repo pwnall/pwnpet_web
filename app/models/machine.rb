@@ -21,6 +21,10 @@ class Machine < ActiveRecord::Base
   
   # Command shell sessions established to this machine.
   has_many :shell_sessions, :inverse_of => :machine, :dependent => :destroy
+
+  # Information about getting this machine under PwnPet's control.  
+  has_one :activation, :class_name => 'MachineActivation',
+                       :inverse_of => :machine, :dependent => :destroy
   
   # Forms can only update these attributes.
   attr_accessible :name, :net_addresses_attributes, :ssh_credentials_attributes

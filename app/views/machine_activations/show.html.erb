@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Machine:</b>
+  <%= @machine_activation.machine_id %>
+</p>
+
+<p>
+  <b>Password reset:</b>
+  <%= @machine_activation.password_reset %>
+</p>
+
+
+<%= link_to 'Edit', edit_machine_activation_path(@machine_activation) %> |
+<%= link_to 'Back', machine_activations_path %>

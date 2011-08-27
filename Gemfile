@@ -35,6 +35,7 @@ gem 'net-sftp', '>= 2.0.5', :require => 'net/sftp'
 gem 'net-ssh', '>= 2.1.4', :require => 'net/ssh'
 gem 'net-ssh-gateway', '>= 1.1.0', :require => 'net/ssh/gateway'
 gem 'pwnstyles_rails', '>= 0.1.0'
+gem 'validates_timeliness', '>= 3.0.6'
 
 group :development, :test do
   gem 'rspec-rails', '>= 2.6.0'
