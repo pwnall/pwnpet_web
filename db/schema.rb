@@ -54,8 +54,8 @@ ActiveRecord::Schema.define(:version => 20110826181355) do
   create_table "machine_activations", :force => true do |t|
     t.integer  "machine_id",     :null => false
     t.boolean  "password_reset", :null => false
-    t.datetime "created_at",     :null => false
     t.datetime "completed_at"
+    t.datetime "created_at",     :null => false
   end
 
   add_index "machine_activations", ["machine_id"], :name => "index_machine_activations_on_machine_id", :unique => true
@@ -71,8 +71,10 @@ ActiveRecord::Schema.define(:version => 20110826181355) do
   add_index "machines", ["user_id", "name"], :name => "index_machines_on_user_id_and_name", :unique => true
 
   create_table "net_addresses", :force => true do |t|
-    t.integer  "machine_id", :null => false
-    t.string   "address",    :null => false
+    t.integer  "machine_id",     :null => false
+    t.string   "address",        :null => false
+    t.datetime "last_used_at"
+    t.datetime "last_failed_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -89,10 +91,14 @@ ActiveRecord::Schema.define(:version => 20110826181355) do
   add_index "shell_sessions", ["machine_id", "username", "created_at"], :name => "index_shell_sessions_on_machine_id_and_username_and_created_at"
 
   create_table "ssh_credentials", :force => true do |t|
-    t.integer "machine_id",         :null => false
-    t.string  "username",           :null => false
-    t.string  "scrambled_password"
-    t.text    "key"
+    t.integer  "machine_id",         :null => false
+    t.string   "username",           :null => false
+    t.string   "scrambled_password"
+    t.text     "key"
+    t.datetime "last_used_at"
+    t.datetime "last_failed_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "ssh_credentials", ["machine_id", "username"], :name => "index_ssh_credentials_on_machine_id_and_username", :unique => true

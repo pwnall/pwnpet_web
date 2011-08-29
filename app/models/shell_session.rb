@@ -78,8 +78,12 @@ class ShellSession < ActiveRecord::Base
       shell.net_ssh = net_ssh
       shell.live_ssh_credential = ssh_credential
       shell.save!
+      net_address.record_use!
+      ssh_credential.record_use!
       shell
     rescue Net::SSH::Exception
+      net_address.record_fail!
+      ssh_credential.record_fail!
       nil
     end
   end

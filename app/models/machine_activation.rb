@@ -33,7 +33,7 @@ class MachineActivation < ActiveRecord::Base
     begin
       # Learn about the machine's platform.
       unless machine.kernel_info
-        return unless shell ||= machine.ssh non_su_credential
+        return unless shell ||= machine.ssh(non_su_credential)
         kernel_info = machine.build_kernel_info
         kernel_info.update_from_shell shell
         return unless kernel_info.save
@@ -41,7 +41,7 @@ class MachineActivation < ActiveRecord::Base
       
       # Create and activate a superuser ssh credential.
       unless su_credential.healthy?
-        return unless shell ||= machine.ssh non_su_credential
+        return unless shell ||= machine.ssh(non_su_credential)
         su_credential ||= machine.ssh_credentials.build :username => 'root'
         su_credential.new_key!
         return unless su_credential.save

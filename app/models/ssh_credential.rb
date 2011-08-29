@@ -27,7 +27,7 @@ class SshCredential < ActiveRecord::Base
   # Reflects the use of this address in a successful connection.
   #
   # This method is called automatically when a ShellSession is established.
-  def successful_use!
+  def record_use!
     self.last_used_at = Time.now
     save!
   end
@@ -35,7 +35,7 @@ class SshCredential < ActiveRecord::Base
   # Reflects the use of this address in a failed connection.
   #
   # This method is called automatically when a ShellSession is established.
-  def failed_use!
+  def record_fail!
     self.last_failed_at = Time.now
     save!
   end

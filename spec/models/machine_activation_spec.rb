@@ -17,11 +17,6 @@ describe MachineActivation do
     activation.should be_valid
   end
   
-  it 'should reject a non-date value for completed_at' do
-    activation.completed_at = 'not valid'
-    activation.should_not be_valid
-  end
-  
   it 'should require a machine' do
     activation.machine = nil
     activation.should_not be_valid

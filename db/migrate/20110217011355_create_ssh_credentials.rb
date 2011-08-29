@@ -6,6 +6,11 @@ class CreateSshCredentials < ActiveRecord::Migration
       t.string :scrambled_password, :length => 64, :null => true,
                                     :default => nil
       t.text :key, :length => 2.kilobytes, :null => true, :default => nil
+      
+      t.timestamp :last_used_at, :null => true
+      t.timestamp :last_failed_at, :null => true
+
+      t.timestamps      
     end
     add_index :ssh_credentials, [:machine_id, :username], :unique => true,
                                 :null => false

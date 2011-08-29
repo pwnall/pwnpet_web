@@ -9,7 +9,9 @@ describe SshCredential do
     before do
       @credential = SshCredential.new :machine => machines(:bunny1),
                                       :username => 'pwnall',
-                                      :password => 'b00mheadsh0t'
+                                      :password => 'b00mheadsh0t',
+                                      :last_used_at => Time.now - 1,
+                                      :last_failed_at => Time.now - 4
     end
       
     it 'should validate' do
@@ -52,6 +54,88 @@ describe SshCredential do
     it 'should reject a machine-username duplicate' do
       @credential.username = ssh_credentials(:bunny1_pwnpet).username
       @credential.should_not be_valid
+    end
+    
+    it 'should accept a nil last_used time' do
+      @credential.last_used_at = nil
+      @credential.should be_valid
+    end
+
+    it 'should accept a nil last_failed time' do
+      @credential.last_failed_at = nil
+      @credential.should be_valid
+    end
+    
+    describe 'with last_used more recent than last_failed' do
+      before do
+        @credential.last_used_at = Time.now - 1
+        @credential.last_failed_at = Time.now - 3
+      end
+      it 'should be healthy' do
+        @credential.should be_healthy
+      end
+    end
+    
+    describe 'with last_used less recent than last_failed' do
+      before do
+        @credential.last_used_at = Time.now - 3
+        @credential.last_failed_at = Time.now - 1
+      end
+      it 'should not be healthy' do
+        @credential.should_not be_healthy
+      end
+    end
+
+    describe 'with no last_used date' do
+      before do
+        @credential.last_used_at = nil
+        @credential.last_failed_at = Time.now - 3
+      end
+      it 'should not be healthy' do
+        @credential.should_not be_healthy
+      end
+    end
+
+    describe 'with no last_failed date' do
+      before do
+        @credential.last_used_at = Time.now - 1
+        @credential.last_failed_at = nil
+      end
+      it 'should be healthy' do
+        @credential.should be_healthy
+      end
+    end
+    
+    describe 'with no last_used and no last_failed date' do
+      before do
+        @credential.last_used_at = nil
+        @credential.last_failed_at = nil
+      end
+      it 'should not be healthy' do
+        @credential.should_not be_healthy
+      end
+    end
+    
+    describe 'record_use!' do
+      before { @credential.record_use! }
+      
+      it 'should update last_used' do
+        @credential.last_used_at.to_i.should eq(Time.now.to_i)
+      end
+      it 'should not change last_failed' do
+        @credential.last_failed_at.to_i.should_not eq(Time.now.to_i)
+      end
+    end
+  
+    describe 'record_fail!' do
+      before { @credential.record_fail! }
+      
+      it 'should update last_failed' do
+        @credential.last_failed_at.to_i.should eq(Time.now.to_i)
+      end
+      it 'should not change last_used' do
+        @credential.last_used_at.to_i.should_not eq(Time.now.to_i)
+      end
     end
   end
   

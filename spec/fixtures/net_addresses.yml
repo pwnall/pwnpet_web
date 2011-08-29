@@ -1,3 +1,9 @@
 bunny1_mdns:
   machine: bunny1
   address: pwnpet-test.local
+
+bunny2_mdns:
+  machine: bunny2
+  address: pwnpet-test.local
+  last_used_at: Fri Aug 26 15:05:54 -0400 2011
+  last_failed_at: Fri Aug 26 15:05:50 -0400 2011
